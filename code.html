@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Planet Cube</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+</head>
+<body>
+    <script>
+    function evaluateSquareRoot(n){
+        //0<a^2<n<(a+1)^2
+        var a = 1;
+        while(a<n){
+            if (a*a < n) {
+                if( (a+1)*(a+1) > n ) {
+                    return a;
+                }
+            } else {
+                return false;
+            }
+            a++;
+        }
+    }
+    console.log(evaluateSquareRoot(1000));
+    function permutate(n) {
+        if(n===1) {
+            return 1;
+        } else {
+            return n*permutate(n-1);
+        }
+    }
+    console.log(permutate(1));
+
+    function nonCrooksProblem(in1, in2) {
+        var groupObj = {};
+        var len1 = in1.length,
+            len2 = in2.length,
+            i, key, exist;
+        //Array를 모두 삽입
+        for (i=0; i < len1; i++) {
+            key = in1[i].charAt(0);
+            if( groupObj[key] === undefined ) {
+                groupObj[key] = [];
+            }
+            groupObj[key].push(in1[i]);
+        }
+        //Array를 삽입하는데 이미 있으면 삽입하지 않고, 이미 들어있는것도 제거
+        for (i=0; i < len2; i++) {
+            key = in2[i].charAt(0);
+            if( groupObj[key] === undefined ) {
+                groupObj[key] = [];
+            }
+            exist = groupObj[key].indexOf(in2[i]);
+            if (exist === -1) {
+                groupObj[key].push(in2[i]);
+            } else {
+                groupObj[key].splice(exist,1);
+            }
+        }
+        return groupObj;
+    }
+    console.log(nonCrooksProblem(["a", "thomas", "thok", "uu", "z"], ["thomas", "thokas", "uuu", "zzz"]));
+
+    function reverseWord(str){
+        var splitted,
+            out,
+            len;
+        splitted = str.split(" ");
+        len = splitted.length;
+        out = "";
+
+        for (var i=0; i<len; i++) {
+            out += " " + splitted.pop();
+        }
+        return out;
+    }
+    console.log(reverseWord("I am a boy you are a girl"));
+    function upSequence(seq) {
+        var lIdx,
+            rIdx,
+            currIdx,
+            len = seq.length,
+            currUpSeqLen = 0,
+            maxUpSeqLen = 0,
+            maxUpSeqStartingIdx =0 ,
+            reverseSeqOccurrence = false,
+            lastReverseSeqInfo = {
+                idx: -1,
+                type: undefined // upward or downward spark
+            },
+            prevMaxVal;
+
+        lIdx = rIdx = 0;
+        currUpSeqLen = 1;
+        prevMaxVal = seq[0];
+        for (currIdx =1 ; currIdx < len; currIdx++) {
+            if (prevMaxVal <= seq[currIdx]) {
+                rIdx = currIdx;
+                prevMaxVal = seq[currIdx];
+                currUpSeqLen++;
+            } else {
+                if (reverseSeqOccurrence) {
+                    //end of moving window
+                    if (maxUpSeqLen < currUpSeqLen) {
+                        maxUpSeqLen = currUpSeqLen;
+                        maxUpSeqStartingIdx = lIdx;
+                    }
+                    //reset index
+                    if (lastReverseSeqInfo.type === "downward") {
+                        lIdx = lastReverseSeqInfo.idx;
+                        rIdx = lastReverseSeqInfo.idx;
+                        currIdx = lastReverseSeqInfo.idx;
+                        prevMaxVal = seq[lastReverseSeqInfo.idx];
+                    } else {
+                        //upward spark
+                        lIdx = currIdx-1;
+                        rIdx = currIdx-1;
+                        currIdx--;
+                        prevMaxVal = seq[lIdx];
+                    }
+                    reverseSeqOccurrence = false;
+                    currUpSeqLen = 1;
+                } else {
+                    //move forward with one reverse number occurrence
+                    reverseSeqOccurrence = true;
+                    rIdx = currIdx;
+                    lastReverseSeqInfo.idx = currIdx;
+                    if (seq[currIdx] > seq[currIdx-1]) {
+                        lastReverseSeqInfo.type = "upward";
+                    } else {
+                        lastReverseSeqInfo.type = "downward";
+                    }
+                }
+            }
+            if (currIdx === len-1) {
+                if (maxUpSeqLen < currUpSeqLen) {
+                    maxUpSeqLen = currUpSeqLen;
+                    maxUpSeqStartingIdx = lIdx;
+                }
+            }
+        }
+        return seq.splice(maxUpSeqStartingIdx, maxUpSeqLen+1);
+    }
+    console.log(upSequence([1, 3, 100, 6, 8, 7, 8, 9, 15, 1000, 300, 400, 500, 600]));
+    function quickSort(seq) {
+        var len = seq.length;
+        if (len === 0) {
+            return [];
+        }
+        var pivot = seq[0];
+        var leftSeq = [];
+        var rightSeq = [];
+        for ( var i=1; i < len; i++ ) {
+            if (seq[i] > pivot) {
+                rightSeq.push(seq[i]);
+            } else {
+                leftSeq.push(seq[i]);
+            }
+
+        }
+        return quickSort(leftSeq).concat(pivot, quickSort(rightSeq));
+    }
+    console.log(quickSort([323, 2, 2112, 44, 2, 3, 45, 5944, 34, 3, 45, 99, 123, 12455]));
+    function exponent(x,y) {
+        //calculate x^y
+        var _x,
+            _y,
+            _halfExp;
+        if (y === 1) {
+            return x;
+        } else if (y === 2) {
+            return x*x;
+        }
+        if (!(y%2)) {
+            //even
+            _x = 1;
+        } else {
+            _x = x;
+        }
+        _halfExp = exponent(x, Math.floor(y/2));
+        return _x*_halfExp*_halfExp;
+    }
+    console.log(exponent(2, 20));
+    function twoDSortedArray( arr, x0, y0, xn, yn, key ) {
+        var pivotX,
+            pivotY,
+            val,
+            ret = null;
+
+        pivotX = Math.max( Math.floor( (xn-x0)/2 ), x0 );
+        pivotY = Math.max( Math.floor( (yn-y0)/2 ), y0 );
+        val = arr[pivotX][pivotY];
+
+        var i;
+        for ( i = x0; i <= xn; i++ ) {
+            if ( arr[i][pivotY] === key) {
+                return { x: i, y: pivotY };
+            }
+        }
+        for ( i = y0; i <= yn; i++ ) {
+            if ( arr[pivotX][i] === key) {
+                return { x: pivotX, y: i };
+            }
+        }
+        if (pivotX === 0) {
+            for ( i = y0; i <= yn; i++ ) {
+                if ( arr[0][i] === key) {
+                    return { x: 0, y: i };
+                }
+            }
+        }
+        if (pivotY === 0) {
+            for ( i = x0; i <= xn; i++ ) {
+                if ( arr[i][0] === key) {
+                    return { x: i, y: 0 };
+                }
+            }
+        }
+        if (pivotX === 0 || pivotY === 0) {
+            return null;
+        }
+
+        if ( val < key ) {
+            return twoDSortedArray( arr, pivotX+1, pivotY+1, xn, yn, key );
+        } else {
+            ret = twoDSortedArray( arr, x0, y0, pivotX-1, pivotY-1, key );
+            if (ret !== null) {
+                return ret;
+            }
+            ret = twoDSortedArray( arr, pivotX+1, y0, xn, pivotY-1, key );
+            if (ret !== null) {
+                return ret;
+            }
+            ret = twoDSortedArray( arr, x0, pivotY+1, pivotX-1, yn, key );
+            if (ret !== null) {
+                return ret;
+            }
+        }
+        console.log("No match found");
+        return null;
+    }
+    function saddleBackSearch(arr, key) {
+        var rowLen, colLen, row, col;
+
+        rowLen = arr.length;
+        colLen = arr[0].length;
+        col = colLen-1;
+        row = 0;
+
+        while (row<rowLen && col>0) {
+            if (arr[row][col]>key) {
+                col--;
+            } else if (arr[row][col]<key) {
+                row++;
+            } else {
+                //Match found
+                console.log("index: arr["+ row + ","+col+"]");
+                break;
+            }
+        }
+        return { x: row, y: col };
+    }
+    var arr = [ [5, 20, 35, 40, 78],
+                [6, 21, 38, 45, 90],
+                [7, 34, 41, 50, 100],
+                [8, 36, 51, 67, 101],
+                [9, 42, 56, 70, 102] ];
+    console.log( twoDSortedArray(arr, 0, 0, 4, 4, 101));
+    console.log( saddleBackSearch(arr, 101));
+    </script>
+</body>
+</html>
