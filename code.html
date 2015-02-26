@@ -267,6 +267,49 @@
                 [9, 42, 56, 70, 102] ];
     console.log( twoDSortedArray(arr, 0, 0, 4, 4, 101));
     console.log( saddleBackSearch(arr, 101));
+    function hammingSequence(top) {
+        var i = top,
+            seq = [];
+        seq.push(1);
+        for (i = 1; i <= top; i++) {
+            if( (i%2===0) || (i%3===0) || (i%5===0) ) {
+                seq.push(i);
+            }
+        }
+        return seq;
+    }
+    console.log(hammingSequence(1000));
+    function countingSort(set) {
+        var count = [],
+            ret = [],
+            clen,
+            slen = set.length,
+            accumulatedCnt,
+            i,
+            k;
+        for ( i = 0; i < slen; i++ ) {
+            k = set[i];
+            if (typeof count[k] !== "undefined" ) {
+                count[k]++;
+            } else {
+                count[k] = 1;
+            }
+        }
+        clen = count.length;
+        accumulatedCnt = 0;
+        for ( i = 0; i < clen; i++ ) {
+            accumulatedCnt += (typeof count[i] === "undefined") ? 0 : count[i];
+            count[i] = accumulatedCnt;
+        }
+        var tmp, cnt;
+        for ( i = 0; i < slen; i++ ) {
+            tmp = set[i];
+            cnt = count[tmp]--;
+            ret[cnt] = tmp;
+        }
+        return ret;
+    };
+    console.log(countingSort([5, 1, 3, 3, 3, 2, 1, 5, 1]));
     </script>
 </body>
 </html>
